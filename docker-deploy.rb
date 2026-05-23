@@ -50,8 +50,8 @@ class DockerDeploy < Formula
   end
 
   def post_install
-    mkdir -p "#{Dir.home}/.docker/cli-plugins"
-    ln -sf "#{bin}/docker-deploy" "#{Dir.home}/.docker/cli-plugins/docker-deploy"
+    (Pathname.new("#{Dir.home}/.docker/cli-plugins")).mkpath
+    ln_sf "#{bin}/docker-deploy", "#{Dir.home}/.docker/cli-plugins/docker-deploy"
   end
 
   test do
