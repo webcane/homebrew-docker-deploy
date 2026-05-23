@@ -5,21 +5,21 @@
 class DockerDeploy < Formula
   desc "Deploy a docker-compose project to a remote VPS via SSH — no git required on the remote"
   homepage "https://github.com/webcane/docker-deploy"
-  version "0.6.4"
+  version "0.6.3"
   license "MIT"
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/webcane/docker-deploy/releases/download/v0.6.4/docker-deploy_darwin_amd64.tar.gz"
-      sha256 "6feec60c706289de7c938dfcf92785f1af7d8ed5a57d571008ff4720f5639f67"
+      url "https://github.com/webcane/docker-deploy/releases/download/v0.6.3/docker-deploy_darwin_amd64.tar.gz"
+      sha256 "10ceadae421831b172e16d9a0972ea478796a39b1f8b3ad25f0a4012d3ec05a8"
 
       define_method(:install) do
         bin.install "docker-deploy"
       end
     end
     if Hardware::CPU.arm?
-      url "https://github.com/webcane/docker-deploy/releases/download/v0.6.4/docker-deploy_darwin_arm64.tar.gz"
-      sha256 "5ee31c9157e7699525850dea7b80995dddeb397e7ac74a8200098c75cb7ae21c"
+      url "https://github.com/webcane/docker-deploy/releases/download/v0.6.3/docker-deploy_darwin_arm64.tar.gz"
+      sha256 "49bcef6bd4bbb3fde384fe02b34c46cbb8b112ca40291c195316fedbeb522c0c"
 
       define_method(:install) do
         bin.install "docker-deploy"
@@ -29,15 +29,15 @@ class DockerDeploy < Formula
 
   on_linux do
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
-      url "https://github.com/webcane/docker-deploy/releases/download/v0.6.4/docker-deploy_linux_amd64.tar.gz"
-      sha256 "9be42f7352504f9cb61649f34d5a18c5c7171ca2e1483dc3bcc4d93bb3013bc1"
+      url "https://github.com/webcane/docker-deploy/releases/download/v0.6.3/docker-deploy_linux_amd64.tar.gz"
+      sha256 "b76abae08e35019b3716bb841ec7fcbe27c0bdba36d3d8cac06a455af418c6f3"
       define_method(:install) do
         bin.install "docker-deploy"
       end
     end
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/webcane/docker-deploy/releases/download/v0.6.4/docker-deploy_linux_arm64.tar.gz"
-      sha256 "8dca3e88605fe8c6881e3a41c31ffa61b7f5bc9202a0b7217d45b6b03c563430"
+      url "https://github.com/webcane/docker-deploy/releases/download/v0.6.3/docker-deploy_linux_arm64.tar.gz"
+      sha256 "be2c34fe9b7ce78c1e638a24c75b17acd75dc349df9ffd30638c1d689abe2eea"
       define_method(:install) do
         bin.install "docker-deploy"
       end
