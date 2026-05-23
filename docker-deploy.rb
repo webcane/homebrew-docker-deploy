@@ -44,14 +44,27 @@ class DockerDeploy < Formula
     end
   end
 
+  def sandbox_allowlist?
+    true
+  end
+
   def uninstall
     symlink = File.expand_path("~/.docker/cli-plugins/docker-deploy")
     File.delete(symlink) if File.exist?(symlink)
   end
 
   def post_install
-    (Pathname.new("#{Dir.home}/.docker/cli-plugins")).mkpath
-    ln_sf "#{bin}/docker-deploy", "#{Dir.home}/.docker/cli-plugins/docker-deploy"
+    cli_plugins = Pathname.new("#{Dir.home}/.docker/cli-plugins")
+    cli_plugins.mkpath
+    target = "#{cli_plugins}/docker-deploy"
+    src = "#{opt_bin}/docker-deploy"
+    File.delete(target) if File.symlink?(target)
+    begin
+      File.symlink(src, target)
+    rescue Errno::EPERM
+      opoo "Could not create symlink automatically. Run manually:\n" \
+           "  ln -sf #{opt_bin}/docker-deploy ~/.docker/cli-plugins/docker-deploy"
+    end
   end
 
   test do
