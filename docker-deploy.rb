@@ -44,13 +44,11 @@ class DockerDeploy < Formula
     end
   end
 
-  def sandbox_allowlist?
-    true
-  end
-
-  def uninstall
-    symlink = File.expand_path("~/.docker/cli-plugins/docker-deploy")
-    File.delete(symlink) if File.exist?(symlink)
+  def caveats
+    <<~EOS
+      To remove the Docker CLI plugin symlink on uninstall:
+        rm -f ~/.docker/cli-plugins/docker-deploy
+    EOS
   end
 
   def post_install
