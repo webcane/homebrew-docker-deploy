@@ -5,21 +5,21 @@
 class DockerDeploy < Formula
   desc "Deploy a docker-compose project to a remote VPS via SSH — no git required on the remote"
   homepage "https://github.com/webcane/docker-deploy"
-  version "0.7.1"
+  version "0.7.3"
   license "MIT"
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/webcane/docker-deploy/releases/download/v0.7.1/docker-deploy_darwin_amd64.tar.gz"
-      sha256 "849b78730058f37085700487fa5b5631301e0a959e26098c4c6637fbf3a531fa"
+      url "https://github.com/webcane/docker-deploy/releases/download/v0.7.3/docker-deploy_darwin_amd64.tar.gz"
+      sha256 "7afc77b5139cfccfdbb3c4951fbc5e4bb8b25a1da5210e8dbe9ef7d6cb8a43c2"
 
       define_method(:install) do
         bin.install "docker-deploy"
       end
     end
     if Hardware::CPU.arm?
-      url "https://github.com/webcane/docker-deploy/releases/download/v0.7.1/docker-deploy_darwin_arm64.tar.gz"
-      sha256 "842fba329c4e5d11a6f4876b9afe548a4a09aa1c3fd6f2d295dd90dc354899a6"
+      url "https://github.com/webcane/docker-deploy/releases/download/v0.7.3/docker-deploy_darwin_arm64.tar.gz"
+      sha256 "f9d54307c1cf6e58a84770734e26f5624a3c3c343458629c3c20b703e1766648"
 
       define_method(:install) do
         bin.install "docker-deploy"
@@ -29,29 +29,40 @@ class DockerDeploy < Formula
 
   on_linux do
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
-      url "https://github.com/webcane/docker-deploy/releases/download/v0.7.1/docker-deploy_linux_amd64.tar.gz"
-      sha256 "6f0868ce19021408d4b786081f1cfdf3e1bb2695cae952247a3f2da37674d535"
+      url "https://github.com/webcane/docker-deploy/releases/download/v0.7.3/docker-deploy_linux_amd64.tar.gz"
+      sha256 "53a23ee4167b5581abe5047d63779d4d6ec20dd8f6a690d7175129ff3094924d"
       define_method(:install) do
         bin.install "docker-deploy"
       end
     end
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/webcane/docker-deploy/releases/download/v0.7.1/docker-deploy_linux_arm64.tar.gz"
-      sha256 "b8a5383d6a03ffa5be657e306f29296e1bb601462b115147c1e017e655c797cc"
+      url "https://github.com/webcane/docker-deploy/releases/download/v0.7.3/docker-deploy_linux_arm64.tar.gz"
+      sha256 "10b18bef356da819ba8ad9ab6540edbaa5f497c6cfc7038f2bc69d947494a4c7"
       define_method(:install) do
         bin.install "docker-deploy"
       end
     end
   end
 
-  def uninstall
-    symlink = File.expand_path("~/.docker/cli-plugins/docker-deploy")
-    File.delete(symlink) if File.exist?(symlink)
+  def post_install
+    cli_plugins = Pathname.new("#{Dir.home}/.docker/cli-plugins")
+    cli_plugins.mkpath
+    target = "#{cli_plugins}/docker-deploy"
+    src = "#{opt_bin}/docker-deploy"
+    File.delete(target) if File.symlink?(target)
+    begin
+      File.symlink(src, target)
+    rescue Errno::EPERM
+      opoo "Could not create symlink automatically. Run manually:\n" \
+           "  ln -sf #{opt_bin}/docker-deploy ~/.docker/cli-plugins/docker-deploy"
+    end
   end
 
-  def post_install
-    (Pathname.new("#{Dir.home}/.docker/cli-plugins")).mkpath
-    ln_sf "#{bin}/docker-deploy", "#{Dir.home}/.docker/cli-plugins/docker-deploy"
+  def caveats
+    <<~EOS
+      To remove the Docker CLI plugin symlink on uninstall:
+        rm -f ~/.docker/cli-plugins/docker-deploy
+    EOS
   end
 
   test do
