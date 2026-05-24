@@ -58,11 +58,13 @@ class DockerDeploy < Formula
     end
   end
 
-  def caveats
-    <<~EOS
-      To remove the Docker CLI plugin symlink on uninstall:
-        rm -f ~/.docker/cli-plugins/docker-deploy
-    EOS
+  def sandbox_allowlist?
+    true
+  end
+
+  def uninstall
+    target = "#{Dir.home}/.docker/cli-plugins/docker-deploy"
+    File.delete(target) if File.exist?(target)
   end
 
   test do
