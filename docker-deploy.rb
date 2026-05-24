@@ -50,14 +50,10 @@ class DockerDeploy < Formula
 
   def caveats
     <<~EOS
-      docker-deploy is installed as a Docker CLI plugin.
-
-      A plugin symlink was created at:
-        #{HOMEBREW_PREFIX}/lib/docker/cli-plugins/docker-deploy
-
-      To also register it under ~/.docker/cli-plugins (required for some Docker setups), run once:
-        mkdir -p ~/.docker/cli-plugins
-        ln -sf #{opt_bin}/docker-deploy ~/.docker/cli-plugins/docker-deploy
+      docker-deploy is a Docker plugin. For Docker to find the plugin, add "cliPluginsExtraDirs" to ~/.docker/config.json:
+        "cliPluginsExtraDirs": [
+            "#{HOMEBREW_PREFIX}/lib/docker/cli-plugins"
+        ]
     EOS
   end
 
