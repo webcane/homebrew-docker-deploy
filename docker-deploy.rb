@@ -48,14 +48,28 @@ class DockerDeploy < Formula
     end
   end
 
+  def post_install
+    plugins_dir = "#{Dir.home}/.docker/cli-plugins"
+    system "mkdir", "-p", plugins_dir
+    target = "#{plugins_dir}/docker-deploy"
+    File.delete(target) if File.symlink?(target)
+    system "ln", "-sf", "#{opt_bin}/docker-deploy", target
+  end
+
+  def uninstall
+    target = "#{Dir.home}/.docker/cli-plugins/docker-deploy"
+    File.delete(target) if File.exist?(target)
+  end
+
   def caveats
     <<~EOS
       docker-deploy is installed as a Docker CLI plugin.
 
-      The plugin symlink was created at:
+      Symlinks created automatically:
         #{HOMEBREW_PREFIX}/lib/docker/cli-plugins/docker-deploy
+        ~/.docker/cli-plugins/docker-deploy
 
-      If Docker does not discover it automatically, link it manually:
+      If the ~/.docker symlink was not created, run:
         ln -sf #{opt_bin}/docker-deploy ~/.docker/cli-plugins/docker-deploy
     EOS
   end
