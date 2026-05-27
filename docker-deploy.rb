@@ -5,13 +5,13 @@
 class DockerDeploy < Formula
   desc "Deploy a docker-compose project to a remote VPS via SSH — no git required on the remote"
   homepage "https://github.com/webcane/docker-deploy"
-  version "0.9.3"
+  version "0.10.0"
   license "MIT"
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/webcane/docker-deploy/releases/download/v0.9.3/docker-deploy_darwin_amd64.tar.gz"
-      sha256 "27beed5de5163702f9ad0cf4c62fafdd2bf8f4eaff0067ac00bb172b578cba79"
+      url "https://github.com/webcane/docker-deploy/releases/download/v0.10.0/docker-deploy_darwin_amd64.tar.gz"
+      sha256 "767123363127fc05ecea93f74b43723a5571953017f7cc3ac09b8e4143037a7b"
 
       define_method(:install) do
         bin.install "docker-deploy"
@@ -19,8 +19,8 @@ class DockerDeploy < Formula
       end
     end
     if Hardware::CPU.arm?
-      url "https://github.com/webcane/docker-deploy/releases/download/v0.9.3/docker-deploy_darwin_arm64.tar.gz"
-      sha256 "b181af1120f19026eecada7fd72c214eaa35f1a762208a8b35544873c8bea95b"
+      url "https://github.com/webcane/docker-deploy/releases/download/v0.10.0/docker-deploy_darwin_arm64.tar.gz"
+      sha256 "9e679d476d2a22a77f7324037eb93ba3c44fc0472e957225996ef9c153ed8ca9"
 
       define_method(:install) do
         bin.install "docker-deploy"
@@ -31,16 +31,16 @@ class DockerDeploy < Formula
 
   on_linux do
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
-      url "https://github.com/webcane/docker-deploy/releases/download/v0.9.3/docker-deploy_linux_amd64.tar.gz"
-      sha256 "c65c70d20686cae712b5ec9f036fbdc3d2c2a9a612fefdddd913f0ca82c5dfea"
+      url "https://github.com/webcane/docker-deploy/releases/download/v0.10.0/docker-deploy_linux_amd64.tar.gz"
+      sha256 "eacfc3440b860377942383eafec500e05aaec26c48422cd15562a2c9ecab85a5"
       define_method(:install) do
         bin.install "docker-deploy"
         (lib/"docker/cli-plugins").install_symlink bin/"docker-deploy"
       end
     end
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/webcane/docker-deploy/releases/download/v0.9.3/docker-deploy_linux_arm64.tar.gz"
-      sha256 "ca473716da13e18922b658e85b3fedd8023b76e35d1e5f0c27dcec87a5a472bf"
+      url "https://github.com/webcane/docker-deploy/releases/download/v0.10.0/docker-deploy_linux_arm64.tar.gz"
+      sha256 "0bf833a1440c8cd7fc3c050d6a6e98fc38491d38ff140d6872bd855ef0889518"
       define_method(:install) do
         bin.install "docker-deploy"
         (lib/"docker/cli-plugins").install_symlink bin/"docker-deploy"
@@ -49,11 +49,18 @@ class DockerDeploy < Formula
   end
 
   def caveats
+    return if Hardware::CPU.intel?
+
     <<~EOS
-      docker-deploy is a Docker plugin. For Docker to find the plugin, add "cliPluginsExtraDirs" to ~/.docker/config.json:
-        "cliPluginsExtraDirs": [
-            "#{HOMEBREW_PREFIX}/lib/docker/cli-plugins"
-        ]
+      Apple Silicon: Docker does not search #{HOMEBREW_PREFIX}/lib/docker/cli-plugins by default.
+      Make the plugin visible via one of:
+
+      Option 1 — symlink into your CLI plugins directory:
+        mkdir -p ~/.docker/cli-plugins
+        ln -sf #{opt_bin}/docker-deploy ~/.docker/cli-plugins/docker-deploy
+
+      Option 2 — add Homebrew's plugin directory to ~/.docker/config.json:
+        "cliPluginsExtraDirs": ["#{HOMEBREW_PREFIX}/lib/docker/cli-plugins"]
     EOS
   end
 
