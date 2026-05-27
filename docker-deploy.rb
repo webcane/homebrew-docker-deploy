@@ -50,18 +50,14 @@ class DockerDeploy < Formula
 
   def caveats
     <<~EOS
-      To make Docker recognize this plugin, add Homebrew's plugin directory
-      to your global Docker configuration (~/.docker/config.json):
+      To use `docker deploy`, make Docker aware of this plugin via one of:
 
-      {
-        "cliPluginsExtraDirs": [
-            "#{HOMEBREW_PREFIX}/lib/docker/cli-plugins"
-        ]
-      }
-
-      Alternatively, you can link it manually into your home profile:
+      Option 1 — symlink into your CLI plugins directory:
         mkdir -p ~/.docker/cli-plugins
         ln -sf #{opt_bin}/docker-deploy ~/.docker/cli-plugins/docker-deploy
+
+      Option 2 — add Homebrew's plugin directory to ~/.docker/config.json:
+        "cliPluginsExtraDirs": ["#{HOMEBREW_PREFIX}/lib/docker/cli-plugins"]
     EOS
   end
 
