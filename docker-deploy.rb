@@ -48,37 +48,14 @@ class DockerDeploy < Formula
     end
   end
 
-  def sandbox_allowlist? = true
-
-  def post_install
-    begin
-      cli_plugins = Pathname.new("#{Dir.home}/.docker/cli-plugins")
-      cli_plugins.mkpath
-      target = cli_plugins/"docker-deploy"
-      target.delete if target.symlink?
-      target.make_symlink(opt_bin/"docker-deploy")
-    rescue Errno::EPERM
-      opoo "Could not create ~/.docker/cli-plugins/docker-deploy symlink automatically."
-      opoo "Run manually: ln -sf #{opt_bin}/docker-deploy ~/.docker/cli-plugins/docker-deploy"
-    end
-  end
-
-  def uninstall
-    target = Pathname.new("#{Dir.home}/.docker/cli-plugins/docker-deploy")
-    target.delete if target.symlink?
-  end
-
   def caveats
     <<~EOS
       docker-deploy is a Docker CLI plugin.
 
-      If `docker deploy` is not found after install, create the symlink manually:
+      Docker Desktop (Mac) finds the plugin automatically via #{HOMEBREW_PREFIX}/lib/docker/cli-plugins.
+      For other Docker setups (colima, Docker Engine), link it manually:
+        mkdir -p ~/.docker/cli-plugins
         ln -sf #{opt_bin}/docker-deploy ~/.docker/cli-plugins/docker-deploy
-
-      Alternatively, add "cliPluginsExtraDirs" to ~/.docker/config.json:
-        "cliPluginsExtraDirs": [
-            "#{HOMEBREW_PREFIX}/lib/docker/cli-plugins"
-        ]
     EOS
   end
 
