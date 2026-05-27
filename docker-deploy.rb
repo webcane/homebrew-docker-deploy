@@ -49,8 +49,11 @@ class DockerDeploy < Formula
   end
 
   def caveats
+    return if Hardware::CPU.intel?
+
     <<~EOS
-      To use `docker deploy`, make Docker aware of this plugin via one of:
+      Apple Silicon: Docker does not search #{HOMEBREW_PREFIX}/lib/docker/cli-plugins by default.
+      Make the plugin visible via one of:
 
       Option 1 — symlink into your CLI plugins directory:
         mkdir -p ~/.docker/cli-plugins
